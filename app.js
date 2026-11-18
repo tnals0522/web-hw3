@@ -31,16 +31,16 @@ function renderCards(list) {
         }
         card.setAttribute("data-type", m.type);
         card.setAttribute("data-title", m.title);
-        
-        let rank ="";
+
+        let rank = "";
         if (m.type === "boxoffice") {
-            rank =`<span class="rank">${m.rank}</span>`;
+            rank = `<span class="rank">${m.rank}</span>`;
         }
         let poster = `<img class="poster" src="${posterUrl(m.poster, "w342")}" alt="${m.title} 포스터">`;
         if (m.poster === null) {
-        card.classList.add("no-poster");
-        poster = `<div class="poster-fallback">${m.title[0]}</div>`;
-      }
+            card.classList.add("no-poster");
+            poster = `<div class="poster-fallback">${m.title[0]}</div>`;
+        }
 
         card.innerHTML = `
         ${poster}
@@ -54,5 +54,26 @@ function renderCards(list) {
         board.appendChild(card);
     }
     document.getElementById("count").textContent = list.length + "편";
+    
 }
- renderCards(movies);
+renderCards(movies);
+
+function getView() {
+    const keyword = document.getElementById("q").value;
+    const type = document.querySelector('input[name="type"]:checked').value
+    const key = document.getElementById("sort").value;
+    let list = search(movies, keyword);
+    if (type !== "all") {
+        list = list.filter(m => m.type === type);
+    }
+    return sortBy(list, key, key !== "title");
+}
+
+function refresh() {
+    renderCards(getView());
+}
+
+document.getElementById("q").addEventListener("input", refresh);
+document.getElementById("sort").addEventListener("change", refresh);
+document.getElementById("typeFilter").addEventListener("change", refresh);
+refresh();
