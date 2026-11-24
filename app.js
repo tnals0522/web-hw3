@@ -62,6 +62,28 @@ function renderCards(list) {
 }
 renderCards(movies);
 
+// getView : 없음 -> 검색 -> 보기 필터 ->정렬 순서를 만든 새 배열
+function getView() {
+    const keyword = document.getElementById("q").value;
+    const type = document.querySelector('input[name="type"]:checked').value;
+    const key = document.getElementById("sort").value;
+    let list = search(movies, keyword);
+    if (type !== "all") {
+        list = list.filter(m => m.type === type);
+    }
+    return sortBy(list, key, key === "title");
+}
+// refresh : 없음 -> 지금 조건으로 다시 그리기(변환값 없음)
+function refresh() {
+    renderCards(getView());
+}
+
+// ===== 이벤트 : 렌더 함수 밖, 맨 아래 한 곳에서 한 번씩 =====
+document.getElementById("q").addEventListener("input", refresh);
+document.getElementById("sort").addEventListener("change", refresh);
+document.getElementById("typeFilter").addEventListener("change", refresh);
+refresh();
+
 // ===== Step 1부터 이 아래에 더합니다(끝낸 TODO 줄은 지움) =====
 // TODO Step 1: 맨 아래에서 renderCards(movies);로 카드 10장을 그려 보기
 // TODO Step 2: getView(검색 ⇒ 보기 필터 ⇒ 정렬)와 refresh, 리스너 3개(#q input, #sort change, #typeFilter change)
